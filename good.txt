@@ -10,3 +10,6 @@
 122.252.225.55:3389@COPYTRACK-111\administrator;Admin@123
 122.176.77.104:3389@WIN-RCNV4RALNNB\administrator;Admin@1234
 122.176.135.197:3389@WIN-3NRLH5MC9LN\administrator;
+Your token was replaced with a new one. You can use this token to access HTTP API:
+8435659667:AAGK1zWRbkc1Y-XG6uaFz0nu1wW9k9WNH0Q
+7803422532
