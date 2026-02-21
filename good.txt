@@ -1,4 +1,4 @@
-59.124.30.84:3389@TS-PC\administrator;
+103.82.21.221:1000059.124.30.84:3389@TS-PC\administrator;
 59.125.96.182:3389@TS-PC\administrator;
 125.227.46.93:3389@TS-PC\administrator;
 125.229.246.50:3389@WIN10-20200314R\administrator;
@@ -8,3 +8,4 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ParadozCode/CentuDox-
 https://www.mediafire.com/file/ua7ynm9n6helw4j/DVM2_1.mp4/file
 AsYR0QBtQ1SuZZFh
 administrator
+103.82.21.221:10000
