@@ -1,0 +1,209 @@
+====================================================
+    GAMESHOP VN - HUONG DAN CAI DAT TREN WINDOWS
+    Su dung XAMPP/Laragon + MySQL
+====================================================
+
+=== PHAN 1: CAI DAT PHAN MEM ===
+
+1. Cai Laragon (khuyen nghi - de nhat)
+   - Tai tai: https://laragon.org/download
+   - Chon: Laragon Full
+   - Cai xong mo Laragon len -> Start All
+   - MySQL tu chay o cong 3306
+
+   HOAC dung XAMPP:
+   - Tai tai: https://www.apachefriends.org
+   - Cai xong mo XAMPP Control Panel
+   - Bat MySQL
+
+2. Cai Node.js 20
+   - Tai tai: https://nodejs.org/en/download
+   - Chon: Windows Installer (.msi) 64-bit
+
+3. Cai Git (neu chua co)
+   - Tai tai: https://git-scm.com/download/win
+
+
+=== PHAN 2: TAO DATABASE MYSQL ===
+
+Mo Laragon -> Database -> New (hoac dung phpMyAdmin)
+
+Neu dung phpMyAdmin (XAMPP/Laragon):
+- Vao: http://localhost/phpmyadmin
+- Click "New" o menu trai
+- Ten database: gameshop
+- Chon utf8mb4_unicode_ci
+- Nhan Create
+
+Hoac dung MySQL command line:
+   mysql -u root -p
+   CREATE DATABASE gameshop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   exit;
+
+
+=== PHAN 3: GIAI NEN VA CAI PROJECT ===
+
+Mo PowerShell hoac Command Prompt roi chay:
+
+   Expand-Archive -Path game-shop.zip -DestinationPath C:\
+   cd C:\game-shop
+
+Xoa package loi:
+   (Get-Content package.json) -replace '"@radix-ui/react-badge.*",','' | Set-Content package.json
+   (Get-Content package.json) -replace '"@radix-ui/react-avatar.*",','' | Set-Content package.json
+
+Cai dependencies:
+   npm install
+   npm install tailwindcss-animate
+   npm install @prisma/client prisma
+
+
+=== PHAN 4: CHINH SUA PRISMA SANG MYSQL ===
+
+Mo file: C:\game-shop\prisma\schema.prisma
+Sua dong datasource:
+
+   datasource db {
+     provider = "mysql"
+     url      = env("DATABASE_URL")
+   }
+
+(Doi tu postgresql sang mysql)
+
+
+=== PHAN 5: TAO FILE .ENV ===
+
+Tao file ten ".env" trong thu muc C:\game-shop
+Noi dung:
+
+   DATABASE_URL="mysql://root:@localhost:3306/gameshop"
+   NEXTAUTH_SECRET="gameshopvn-secret-key-2026-abcxyz123456"
+   NEXTAUTH_URL="https://vdmshop.io.vn"
+   NEXT_PUBLIC_APP_URL="https://vdmshop.io.vn"
+   NEXT_PUBLIC_APP_NAME="GameShop VN"
+   BANK_ACCOUNT="22523112009"
+   BANK_NAME="TPBank"
+   BANK_OWNER="DUONG VINH MANH"
+   BANK_BIN="546034"
+   TELEGRAM_BOT_TOKEN="token_bot_cua_ban"
+   TELEGRAM_ADMIN_ID="7803422532"
+   CARD_API_PARTNER_ID="ma_doi_tac"
+   CARD_API_PARTNER_KEY="khoa_doi_tac"
+
+LUU Y:
+- Neu XAMPP/Laragon co dat mat khau MySQL thi sua thanh:
+  mysql://root:MAT_KHAU@localhost:3306/gameshop
+- Neu khong co mat khau thi de trong nhu tren
+
+
+=== PHAN 6: KHOI TAO DATABASE ===
+
+Mo PowerShell tai C:\game-shop roi chay:
+
+   npx prisma generate
+   npx prisma db push
+   npm run db:seed
+
+Neu thanh cong se thay:
+   "Database seeded successfully"
+   Admin: admin@gameshop.vn / Admin@123456
+
+
+=== PHAN 7: CHAY APP ===
+
+Cach 1 - Chay thu (dev mode):
+   cd C:\game-shop
+   npm run dev
+   Mo trinh duyet vao: http://localhost:3000
+
+Cach 2 - Chay production voi PM2 (khuyen nghi):
+   npm install -g pm2 pm2-windows-startup
+   pm2-startup install
+   npm run build
+   pm2 start npm --name "gameshop" -- start
+   pm2 save
+
+
+=== PHAN 8: GAN DOMAIN VOI CLOUDFLARE TUNNEL ===
+
+Buoc 1 - Tao tai khoan Cloudflare tai cloudflare.com
+
+Buoc 2 - Them domain vdmshop.io.vn vao Cloudflare:
+   - Dang nhap Cloudflare -> Add a Site
+   - Nhap vdmshop.io.vn -> Chon goi Free
+   - Ghi lai 2 Nameserver Cloudflare cho
+
+Buoc 3 - Doi Nameserver tai Tino.vn:
+   - Dang nhap Tino.vn
+   - Quan ly ten mien -> vdmshop.io.vn
+   - Doi Nameserver thanh 2 cai Cloudflare cho
+
+Buoc 4 - Cai cloudflared tren Windows:
+   - Tai tai: https://github.com/cloudflare/cloudflared/releases/latest
+   - Tai file: cloudflared-windows-amd64.msi
+   - Cai vao
+
+Buoc 5 - Tao tunnel:
+   cloudflared tunnel login
+   cloudflared tunnel create gameshop
+   cloudflared tunnel route dns gameshop vdmshop.io.vn
+
+Buoc 6 - Tao file config:
+   Tao file: C:\Users\TEN_USER\.cloudflared\config.yml
+   Noi dung (thay ID_TUNNEL va TEN_USER):
+
+   tunnel: ID_TUNNEL_CUA_BAN
+   credentials-file: C:\Users\TEN_USER\.cloudflared\ID_TUNNEL.json
+   protocol: http2
+   ingress:
+     - hostname: vdmshop.io.vn
+       service: http://localhost:3000
+     - service: http_status:404
+
+Buoc 7 - Chay tunnel:
+   cloudflared service install
+   cloudflared tunnel run gameshop
+
+
+=== PHAN 9: KIEM TRA ===
+
+- Website: https://vdmshop.io.vn
+- Admin: https://vdmshop.io.vn/admin
+- Email: admin@gameshop.vn
+- Mat khau: Admin@123456
+- Doi mat khau ngay sau khi dang nhap!
+
+
+=== PHAN 10: LENH HAY DUNG ===
+
+Restart app:         pm2 restart gameshop
+Xem log:             pm2 logs gameshop
+Dung app:            pm2 stop gameshop
+Update code:         npm run build -> pm2 restart gameshop
+Xem tunnel:          cloudflared tunnel info gameshop
+
+
+=== XU LY LOI THUONG GAP ===
+
+Loi: Cannot find module
+   -> Chay: npm install
+
+Loi: Access denied MySQL
+   -> Kiem tra mat khau trong DATABASE_URL
+
+Loi: Port 3000 da dung
+   -> Chay: netstat -ano | findstr :3000
+   -> Chay: taskkill /PID <SO_PID> /F
+
+Loi: Prisma generate that bai
+   -> Kiem tra lai provider trong schema.prisma la "mysql"
+   -> Chay lai: npx prisma generate
+
+Loi: db push that bai
+   -> Kiem tra MySQL dang chay (XAMPP/Laragon)
+   -> Kiem tra DATABASE_URL dung chua
+
+
+====================================================
+    Ho tro: vdmshop.io.vn | Telegram: @vdmshop
+====================================================
